@@ -35,7 +35,4 @@ function mergeSort(array) {
 	return merge(left, right);
 }
 
-
-
-
 console.log(mergeSort(unsortedArray));
