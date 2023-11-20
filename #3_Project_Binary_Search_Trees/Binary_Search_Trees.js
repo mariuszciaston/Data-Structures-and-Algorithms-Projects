@@ -242,34 +242,19 @@ class Tree {
 
 // TEST ----------------------------------------
 const tree = new Tree([1, 2, 3, 4, 5, 6, 7, 8]);
-// const tree = new Tree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
 
-tree.insert(69);
 tree.insert(9);
-tree.insert(77);
-
-tree.delete(69);
-
-tree.find(4);
-
-const levelOrderResult = tree.levelOrder();
+tree.delete(9);
 
 // prints the data of all nodes in level order
-console.log(`levelOrderResult: ${levelOrderResult}`);
+console.log(`levelOrderResult: ${tree.levelOrder()}`);
 
 // prints the data of all nodes in level order
 // tree.levelOrder((node) => console.log(node.data));
 
-console.log('----------------------------------------');
-
-const inOrderResult = tree.inOrder();
-console.log(`inOrderResult: ${inOrderResult}`); // prints the data of all nodes in in-order
-
-const preOrderResult = tree.preOrder();
-console.log(`preOrderResult: ${preOrderResult}`); // prints the data of all nodes in pre-order
-
-const postOrderResult = tree.postOrder();
-console.log(`postOrderResult: ${postOrderResult}`); // prints the data of all nodes in post-order
+console.log(`inOrderResult: ${tree.inOrder()}`); // prints the data of all nodes in in-order
+console.log(`preOrderResult: ${tree.preOrder()}`); // prints the data of all nodes in pre-order
+console.log(`postOrderResult: ${tree.postOrder()}`); // prints the data of all nodes in post-order
 
 // tree.inOrder((node) => console.log(node.data));  // prints the data of all nodes in in-order
 // tree.preOrder((node) => console.log(node.data));  // prints the data of all nodes in pre-order
@@ -282,26 +267,84 @@ const height = tree.root.height();
 // prints the height of the root node
 console.log(`Height of the root node: ${height}`);
 
-console.log('----------------------------------------');
-
-const node = tree.find(77);
+const node = tree.find(3);
 if (node !== null) {
 	const depth = node.depth();
-	console.log(`Depth of node with data 77: ${depth}`);
+	console.log(`Depth of node with data '3': ${depth}`);
 } else {
 	console.log('Data not found in tree');
 }
 
-console.log('----------------------------------------');
-
 // prints true if the tree is balanced, false otherwise
-console.log(tree.isBalanced());
-
-tree.rebalance();
-
-console.log(tree.isBalanced());
+console.log(`isBalanced: ${tree.isBalanced()}`);
 
 console.log('----------------------------------------');
 
 console.log('BINARY SEARCH TREE: ');
 tree.prettyPrint();
+
+console.log('');
+console.log('########################################');
+console.log('');
+
+// DRIVER SCRIPT ----------------------------------------
+
+// 1. Create a binary search tree from an array of random numbers < 100. You can create a function that returns an array of random numbers every time you call it if you wish.
+console.log(`Create a binary search tree from an array of random numbers < 100: `);
+
+console.log('----------------------------------------');
+
+function randomNumbers() {
+	const array = [];
+	for (let i = 0; i < 100; i += 1) {
+		array.push(Math.floor(Math.random() * 100));
+	}
+	return array;
+}
+
+console.log(`randomNumbers: ${randomNumbers()}`);
+
+const tree2 = new Tree(randomNumbers());
+
+console.log('----------------------------------------');
+
+// 2. Confirm that the tree is balanced by calling isBalanced.
+console.log(`isBalanced: ${tree2.isBalanced()}`);
+
+console.log('----------------------------------------');
+// 3. Print out all elements in level, pre, post, and in order.
+console.log(`levelOrderResult: ${tree2.levelOrder()}`);
+console.log(`inOrderResult: ${tree2.inOrder()}`); //
+console.log(`preOrderResult: ${tree2.preOrder()}`); // prints the data of all nodes in pre-order
+console.log(`postOrderResult: ${tree2.postOrder()}`); // prints the data of all nodes in post-order
+console.log('----------------------------------------');
+
+// 4. Unbalance the tree by adding several numbers > 100.
+console.log(`***adding several numbers > 100 to unbalance the tree***`);
+tree2.insert(100);
+tree2.insert(200);
+tree2.insert(300);
+tree2.insert(400);
+
+// 5. Confirm that the tree is unbalanced by calling isBalanced.
+console.log(`isBalanced: ${tree2.isBalanced()}`);
+
+// 6. Balance the tree by calling rebalance.
+console.log(`***rebalance:***`);
+tree2.rebalance();
+
+// 7. Confirm that the tree is balanced by calling isBalanced.
+console.log(`isBalanced: ${tree2.isBalanced()}`);
+
+// 8. Print out all elements in level, pre, post, and in order.
+
+console.log('----------------------------------------');
+// 8. Print out all elements in level, pre, post, and in order.
+console.log(`levelOrderResult: ${tree2.levelOrder()}`);
+console.log(`inOrderResult: ${tree2.inOrder()}`); //
+console.log(`preOrderResult: ${tree2.preOrder()}`); // prints the data of all nodes in pre-order
+console.log(`postOrderResult: ${tree2.postOrder()}`); // prints the data of all nodes in post-order
+console.log('----------------------------------------');
+
+console.log('BINARY SEARCH TREE: ');
+tree2.prettyPrint();
