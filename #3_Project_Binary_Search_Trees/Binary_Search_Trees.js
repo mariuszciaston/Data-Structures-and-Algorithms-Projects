@@ -2,7 +2,7 @@
 /* eslint-disable max-classes-per-file */
 
 class Node {
-	constructor(data, left = null, right = null, parent = null) {
+	constructor(data, left = null, right = null) {
 		this.data = data;
 		this.left = left;
 		this.right = right;
@@ -41,23 +41,6 @@ class Tree {
 		return this.buildTree(sortedArray, 0, sortedArray.length - 1);
 	}
 
-	// buildTree(sortedArray, start, end) {
-	// 	// Base case
-	// 	if (start > end) {
-	// 		return null;
-	// 	}
-
-	// 	// Find the middle and make it root
-	// 	const mid = Math.floor((start + end) / 2);
-	// 	const node = new Node(sortedArray[mid]);
-
-	// 	// Construct the left and right subtrees
-	// 	node.left = this.buildTree(sortedArray, start, mid - 1);
-	// 	node.right = this.buildTree(sortedArray, mid + 1, end);
-
-	// 	return node;
-	// }
-
 	buildTree(sortedArray, start, end, parent = null) {
 		// Base case
 		if (start > end) {
@@ -77,21 +60,6 @@ class Tree {
 
 		return node;
 	}
-
-	prettyPrint = (node = this.root, prefix = '', isLeft = true) => {
-		if (node === null) {
-			return;
-		}
-		if (node.right !== null) {
-			this.prettyPrint(node.right, `${prefix}${isLeft ? '│   ' : '    '}`, false);
-		}
-		console.log(`${prefix}${isLeft ? '└── ' : '┌── '}${node.data}`);
-		if (node.left !== null) {
-			this.prettyPrint(node.left, `${prefix}${isLeft ? '    ' : '│   '}`, true);
-		}
-	};
-
-	// -------------------------------------------------------------------------------------
 
 	insert(data) {
 		const newNode = new Node(data);
@@ -162,13 +130,10 @@ class Tree {
 		return this.findMinNode(node.left);
 	}
 
-	// -------------------------------------------------------------------------------------
-
 	find(data) {
 		let current = this.root;
 		while (current) {
 			if (data === current.data) {
-				// console.log(`Found node with data: ${current.data}`);
 				return current;
 			}
 			if (data < current.data) {
@@ -177,7 +142,6 @@ class Tree {
 				current = current.right;
 			}
 		}
-		// console.log('Data not found in tree');
 		return null;
 	}
 
@@ -261,9 +225,22 @@ class Tree {
 		const nodes = this.inOrder();
 		this.root = this.buildTree(nodes, 0, nodes.length - 1);
 	}
+
+	prettyPrint = (node = this.root, prefix = '', isLeft = true) => {
+		if (node === null) {
+			return;
+		}
+		if (node.right !== null) {
+			this.prettyPrint(node.right, `${prefix}${isLeft ? '│   ' : '    '}`, false);
+		}
+		console.log(`${prefix}${isLeft ? '└── ' : '┌── '}${node.data}`);
+		if (node.left !== null) {
+			this.prettyPrint(node.left, `${prefix}${isLeft ? '    ' : '│   '}`, true);
+		}
+	};
 }
 
-// Test
+// TEST ----------------------------------------
 const tree = new Tree([1, 2, 3, 4, 5, 6, 7, 8]);
 // const tree = new Tree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
 
