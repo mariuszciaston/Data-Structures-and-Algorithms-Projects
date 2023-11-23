@@ -71,18 +71,12 @@ class Tree {
 	}
 
 	insertNode(node, newNode) {
-		if (newNode.data < node.data) {
-			if (node.left === null) {
-				node.left = newNode;
-				newNode.parent = node;
-			} else {
-				this.insertNode(node.left, newNode);
-			}
-		} else if (node.right === null) {
-			node.right = newNode;
+		const direction = newNode.data < node.data ? 'left' : 'right';
+		if (node[direction] === null) {
+			node[direction] = newNode;
 			newNode.parent = node;
 		} else {
-			this.insertNode(node.right, newNode);
+			this.insertNode(node[direction], newNode);
 		}
 	}
 
@@ -91,6 +85,7 @@ class Tree {
 	}
 
 	deleteNode(node, key) {
+		// Base case
 		if (node === null) {
 			return null;
 		}
@@ -99,18 +94,22 @@ class Tree {
 			node.left = this.deleteNode(node.left, key);
 			return node;
 		}
+
 		if (key > node.data) {
 			node.right = this.deleteNode(node.right, key);
 			return node;
 		}
+
 		if (node.left === null && node.right === null) {
 			node = null;
 			return node;
 		}
+
 		if (node.left === null) {
 			node = node.right;
 			return node;
 		}
+
 		if (node.right === null) {
 			node = node.left;
 			return node;
@@ -145,13 +144,14 @@ class Tree {
 		return null;
 	}
 
-	levelOrder(callback = (node) => node.data) {
+	// levelOrder / BFS (Breadth-First Search)
+	levelOrder() {
 		const queue = [this.root];
 		const result = [];
 
 		while (queue.length > 0) {
 			const node = queue.shift();
-			result.push(callback(node));
+			result.push(node.data);
 
 			if (node.left !== null) {
 				queue.push(node.left);
@@ -160,49 +160,50 @@ class Tree {
 				queue.push(node.right);
 			}
 		}
-
 		return result;
 	}
 
-	inOrder(callback = (node) => node.data) {
+	inOrder() {
 		const result = [];
-		this.inOrderTraverse(this.root, callback, result);
+		this.inOrderTraverse(this.root, result);
 		return result;
 	}
 
-	inOrderTraverse(node, callback, result) {
+	inOrderTraverse(node, result) {
 		if (node !== null) {
-			this.inOrderTraverse(node.left, callback, result);
-			result.push(callback(node));
-			this.inOrderTraverse(node.right, callback, result);
+			this.inOrderTraverse(node.left, result);
+			result.push(node.data);
+			this.inOrderTraverse(node.right, result);
 		}
 	}
 
-	preOrder(callback = (node) => node.data) {
+	// preOrder / DFS (Depth-First Search)
+	preOrder() {
 		const result = [];
-		this.preOrderTraverse(this.root, callback, result);
+		this.preOrderTraverse(this.root, result);
 		return result;
 	}
 
-	preOrderTraverse(node, callback, result) {
+	preOrderTraverse(node, result) {
 		if (node !== null) {
-			result.push(callback(node));
-			this.preOrderTraverse(node.left, callback, result);
-			this.preOrderTraverse(node.right, callback, result);
+			result.push(node.data);
+			this.preOrderTraverse(node.left, result);
+			this.preOrderTraverse(node.right, result);
 		}
 	}
 
-	postOrder(callback = (node) => node.data) {
+	// postOrder / DFS (Depth-First Search) - REVERSE
+	postOrder() {
 		const result = [];
-		this.postOrderTraverse(this.root, callback, result);
+		this.postOrderTraverse(this.root, result);
 		return result;
 	}
 
-	postOrderTraverse(node, callback, result) {
+	postOrderTraverse(node, result) {
 		if (node !== null) {
-			this.postOrderTraverse(node.left, callback, result);
-			this.postOrderTraverse(node.right, callback, result);
-			result.push(callback(node));
+			this.postOrderTraverse(node.left, result);
+			this.postOrderTraverse(node.right, result);
+			result.push(node.data);
 		}
 	}
 
@@ -247,18 +248,18 @@ tree.insert(9);
 tree.delete(9);
 
 // prints the data of all nodes in level order
-console.log(`levelOrderResult: ${tree.levelOrder()}`);
+console.log(`levelOrderResult / BFS (Breadth-First Search): ${tree.levelOrder()}`);
 
 // prints the data of all nodes in level order
 // tree.levelOrder((node) => console.log(node.data));
 
-console.log(`inOrderResult: ${tree.inOrder()}`); // prints the data of all nodes in in-order
-console.log(`preOrderResult: ${tree.preOrder()}`); // prints the data of all nodes in pre-order
-console.log(`postOrderResult: ${tree.postOrder()}`); // prints the data of all nodes in post-order
+console.log(`inOrderResult: ${tree.inOrder()}`);
+console.log(`preOrderResult / DFS (Depth-First Search): ${tree.preOrder()}`);
+console.log(`postOrderResult / DFS (Depth-First Search) - REVERSE: ${tree.postOrder()}`);
 
-// tree.inOrder((node) => console.log(node.data));  // prints the data of all nodes in in-order
-// tree.preOrder((node) => console.log(node.data));  // prints the data of all nodes in pre-order
-// tree.postOrder((node) => console.log(node.data));  // prints the data of all nodes in post-order
+// tree.inOrder((node) => console.log(node.data));
+// tree.preOrder((node) => console.log(node.data));
+// tree.postOrder((node) => console.log(node.data));
 
 console.log('----------------------------------------');
 
@@ -313,10 +314,10 @@ console.log(`isBalanced: ${tree2.isBalanced()}`);
 
 console.log('----------------------------------------');
 // 3. Print out all elements in level, pre, post, and in order.
-console.log(`levelOrderResult: ${tree2.levelOrder()}`);
+console.log(`levelOrderResult / BFS (Breadth-First Search): ${tree2.levelOrder()}`);
 console.log(`inOrderResult: ${tree2.inOrder()}`); //
-console.log(`preOrderResult: ${tree2.preOrder()}`); // prints the data of all nodes in pre-order
-console.log(`postOrderResult: ${tree2.postOrder()}`); // prints the data of all nodes in post-order
+console.log(`preOrderResult / DFS (Depth-First Search): ${tree2.preOrder()}`); // prints the data of all nodes in pre-order
+console.log(`postOrderResult / DFS (Depth-First Search) - REVERSE: ${tree2.postOrder()}`); // prints the data of all nodes in post-order
 console.log('----------------------------------------');
 
 // 4. Unbalance the tree by adding several numbers > 100.
@@ -340,10 +341,10 @@ console.log(`isBalanced: ${tree2.isBalanced()}`);
 
 console.log('----------------------------------------');
 // 8. Print out all elements in level, pre, post, and in order.
-console.log(`levelOrderResult: ${tree2.levelOrder()}`);
+console.log(`levelOrderResult / BFS (Breadth-First Search): ${tree2.levelOrder()}`);
 console.log(`inOrderResult: ${tree2.inOrder()}`); //
-console.log(`preOrderResult: ${tree2.preOrder()}`); // prints the data of all nodes in pre-order
-console.log(`postOrderResult: ${tree2.postOrder()}`); // prints the data of all nodes in post-order
+console.log(`preOrderResult / DFS (Depth-First Search): ${tree2.preOrder()}`);
+console.log(`postOrderResult / DFS (Depth-First Search) - REVERSE: ${tree2.postOrder()}`);
 console.log('----------------------------------------');
 
 console.log('BINARY SEARCH TREE: ');
