@@ -1,22 +1,5 @@
-// 1. Define board. Think about the rules of the board and knight, and make sure to follow them.
-const emptyBoard = [
-	[0, 0, 0, 0, 0, 0, 0, 0],
-	[0, 0, 0, 0, 0, 0, 0, 0],
-	[0, 0, 0, 0, 0, 0, 0, 0],
-	[0, 0, 0, 0, 0, 0, 0, 0],
-	[0, 0, 0, 0, 0, 0, 0, 0],
-	[0, 0, 0, 0, 0, 0, 0, 0],
-	[0, 0, 0, 0, 0, 0, 0, 0],
-	[0, 0, 0, 0, 0, 0, 0, 0],
-];
-
-console.log(emptyBoard);
-
-// 2. Define possible moves. For every square there is a number of possible moves, choose a data structure that will allow you to work with them. Don’t allow any moves to go off the board.
-// 3. Define how knight can move (4 directions = max 8 posible moves)
-
-function createKnightMoves() {
-	const knightMoves = new Map();
+function createPossibleMoves() {
+	const movementMap = new Map();
 	const directions = [
 		[-2, -1],
 		[-2, 1],
@@ -42,17 +25,15 @@ function createKnightMoves() {
 				}
 			});
 
-			knightMoves.set(JSON.stringify(node), moves);
+			movementMap.set(JSON.stringify(node), moves);
 		}
 	}
 
-	return knightMoves;
+	return movementMap;
 }
 
-const possibleMoves = createKnightMoves();
-console.log(possibleMoves);
-
-// 4. Decide which search algorithm is best to use for this case. Hint: one of them could be a potentially infinite series. Use the chosen search algorithm to find the shortest path between the starting square (or node) and the ending square. Output what that full path looks like, e.g.:
+const possibleMoves = createPossibleMoves();
+// console.log(possibleMoves);
 
 class Queue {
 	constructor() {
@@ -72,40 +53,44 @@ class Queue {
 	}
 }
 
-function doBFS(graph, source) {
-	const bfsInfo = [];
-
-	for (let i = 0; i < graph.length; i += 1) {
-		bfsInfo[i] = {
-			distance: null,
-			predecessor: null,
-		};
+function knightMoves(start, finish) {
+	function isOnBoard(point) {
+		return point[0] >= 0 && point[0] <= 7 && point[1] >= 0 && point[1] <= 7;
 	}
 
-	bfsInfo[source].distance = 0;
+	if (!isOnBoard(start) || !isOnBoard(finish)) {
+		console.log('Out of board');
+		return;
+	}
 
 	const queue = new Queue();
-	queue.enqueue(source);
+	const visited = new Set();
+
+	queue.enqueue([start, 0, [start]]);
 
 	while (!queue.isEmpty()) {
-		const currentVertex = queue.dequeue();
+		const [currentPos, steps, path] = queue.dequeue();
+		const currentKey = JSON.stringify(currentPos);
 
-		for (let i = 0; i < graph[currentVertex].length; i += 1) {
-			const adjacentVertex = graph[currentVertex][i];
+		if (currentKey === JSON.stringify(finish)) {
+			console.log(`You made it in ${steps} moves! Here's your path:`);
+			path.forEach((pos) => console.log(pos));
+			return;
+		}
 
-			if (bfsInfo[adjacentVertex].distance === null) {
-				bfsInfo[adjacentVertex].distance = bfsInfo[currentVertex].distance + 1;
-				bfsInfo[adjacentVertex].predecessor = currentVertex;
-				queue.enqueue(adjacentVertex);
-			}
+		if (!visited.has(currentKey)) {
+			visited.add(currentKey);
+			// console.log(visited);
+			const moves = possibleMoves.get(currentKey);
+
+			moves.forEach((move) => {
+				const newPath = [...path, move];
+				queue.enqueue([move, steps + 1, newPath]);
+			});
 		}
 	}
 
-	return bfsInfo;
+	console.log('No path found');
 }
 
-// function knightMoves(start, finish) {
-
-// }
-
-// console.log(knightMoves([0, 0], [3, 3]));
+knightMoves([0, 0], [7, 7]);
