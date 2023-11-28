@@ -1,4 +1,4 @@
-function createPossibleMoves() {
+function definePossibleMoves() {
 	const movementMap = new Map();
 	const directions = [
 		[-2, -1],
@@ -25,14 +25,14 @@ function createPossibleMoves() {
 				}
 			});
 
-			movementMap.set(JSON.stringify(node), moves);
+			movementMap.set(node.toString(), moves);
 		}
 	}
 
 	return movementMap;
 }
 
-const possibleMoves = createPossibleMoves();
+const possibleMoves = definePossibleMoves()
 // console.log(possibleMoves);
 
 class Queue {
@@ -54,6 +54,7 @@ class Queue {
 }
 
 function knightMoves(start, finish) {
+	
 	function isOnBoard(point) {
 		return point[0] >= 0 && point[0] <= 7 && point[1] >= 0 && point[1] <= 7;
 	}
@@ -64,23 +65,22 @@ function knightMoves(start, finish) {
 	}
 
 	const queue = new Queue();
-	const visited = new Set();
+	const visited = new Map();
 
 	queue.enqueue([start, 0, [start]]);
 
 	while (!queue.isEmpty()) {
 		const [currentPos, steps, path] = queue.dequeue();
-		const currentKey = JSON.stringify(currentPos);
+		const currentKey = currentPos.toString();
 
-		if (currentKey === JSON.stringify(finish)) {
+		if (currentKey === finish.toString()) {
 			console.log(`You made it in ${steps} moves! Here's your path:`);
 			path.forEach((pos) => console.log(pos));
 			return;
 		}
 
 		if (!visited.has(currentKey)) {
-			visited.add(currentKey);
-			// console.log(visited);
+			visited.set(currentKey, true);
 			const moves = possibleMoves.get(currentKey);
 
 			moves.forEach((move) => {
