@@ -10,104 +10,102 @@ const emptyBoard = [
 	[0, 0, 0, 0, 0, 0, 0, 0],
 ];
 
-// 2. Define possible moves. For every square there is a number of possible moves, choose a data structure that will allow you to work with them. Don’t allow any moves to go off the board.
+console.log(emptyBoard);
 
-function createEdgeList() {
-	const edgeList = [];
+// 2. Define possible moves. For every square there is a number of possible moves, choose a data structure that will allow you to work with them. Don’t allow any moves to go off the board.
+// 3. Define how knight can move (4 directions = max 8 posible moves)
+
+function createKnightMoves() {
+	const knightMoves = new Map();
+	const directions = [
+		[-2, -1],
+		[-2, 1],
+		[-1, -2],
+		[-1, 2],
+		[1, -2],
+		[1, 2],
+		[2, -1],
+		[2, 1],
+	];
+
 	for (let i = 0; i < 8; i += 1) {
 		for (let j = 0; j < 8; j += 1) {
-			if (i > 0) {
-				edgeList.push([
-					[i, j],
-					[i - 1, j],
-				]); // Up
-			}
-			if (i < 7) {
-				edgeList.push([
-					[i, j],
-					[i + 1, j],
-				]); // Down
-			}
-			if (j > 0) {
-				edgeList.push([
-					[i, j],
-					[i, j - 1],
-				]); // Left
-			}
-			if (j < 7) {
-				edgeList.push([
-					[i, j],
-					[i, j + 1],
-				]); // Right
-			}
+			const node = [i, j];
+			const moves = [];
+
+			directions.forEach(([x, y]) => {
+				const newX = i + x;
+				const newY = j + y;
+
+				if (newX >= 0 && newX < 8 && newY >= 0 && newY < 8) {
+					moves.push([newX, newY]);
+				}
+			});
+
+			knightMoves.set(JSON.stringify(node), moves);
 		}
 	}
-	return edgeList;
+
+	return knightMoves;
 }
 
-console.log(createEdgeList());
-
-// 3. Define how knight can move (4 directions = max 8 posible moves)
+const possibleMoves = createKnightMoves();
+console.log(possibleMoves);
 
 // 4. Decide which search algorithm is best to use for this case. Hint: one of them could be a potentially infinite series. Use the chosen search algorithm to find the shortest path between the starting square (or node) and the ending square. Output what that full path looks like, e.g.:
 
-// knightMoves([0,0],[3,3]) == [[0,0],[2,1],[3,3]]
-// or
-// knightMoves([0,0],[3,3]) == [[0,0],[1,2],[3,3]]
+class Queue {
+	constructor() {
+		this.items = [];
+	}
 
-// > knightMoves([3,3],[4,3])
-//   => You made it in 3 moves!  Here's your path:
-//     [3,3]
-//     [4,5]
-//     [2,4]
-//     [4,3]
+	enqueue(obj) {
+		this.items.push(obj);
+	}
 
-// ---------------------------------------------------------------------
+	dequeue() {
+		return this.items.shift();
+	}
+
+	isEmpty() {
+		return this.items.length === 0;
+	}
+}
+
+function doBFS(graph, source) {
+	const bfsInfo = [];
+
+	for (let i = 0; i < graph.length; i += 1) {
+		bfsInfo[i] = {
+			distance: null,
+			predecessor: null,
+		};
+	}
+
+	bfsInfo[source].distance = 0;
+
+	const queue = new Queue();
+	queue.enqueue(source);
+
+	while (!queue.isEmpty()) {
+		const currentVertex = queue.dequeue();
+
+		for (let i = 0; i < graph[currentVertex].length; i += 1) {
+			const adjacentVertex = graph[currentVertex][i];
+
+			if (bfsInfo[adjacentVertex].distance === null) {
+				bfsInfo[adjacentVertex].distance = bfsInfo[currentVertex].distance + 1;
+				bfsInfo[adjacentVertex].predecessor = currentVertex;
+				queue.enqueue(adjacentVertex);
+			}
+		}
+	}
+
+	return bfsInfo;
+}
 
 // function knightMoves(start, finish) {
-// 	// const move = () => {
-// 	// }
+
 // }
 
-// const adjMatrixStart = [
-// 	[1, 0, 0, 0, 0, 0, 0, 0],
-// 	[0, 0, 0, 0, 0, 0, 0, 0],
-// 	[0, 0, 0, 0, 0, 0, 0, 0],
-// 	[0, 0, 0, 0, 0, 0, 0, 0],
-// 	[0, 0, 0, 0, 0, 0, 0, 0],
-// 	[0, 0, 0, 0, 0, 0, 0, 0],
-// 	[0, 0, 0, 0, 0, 0, 0, 0],
-// 	[0, 0, 0, 0, 0, 0, 0, 0],
-// ];
-
-// const adjMatrixFinish = [
-// 	[0, 0, 0, 0, 0, 0, 0, 0],
-// 	[0, 0, 0, 0, 0, 0, 0, 0],
-// 	[0, 0, 0, 0, 0, 0, 0, 0],
-// 	[0, 0, 0, 1, 0, 0, 0, 0],
-// 	[0, 0, 0, 0, 0, 0, 0, 0],
-// 	[0, 0, 0, 0, 0, 0, 0, 0],
-// 	[0, 0, 0, 0, 0, 0, 0, 0],
-// 	[0, 0, 0, 0, 0, 0, 0, 0],
-// ];
-
-// function convertToEdgeList(adjMatrix, edgeList = []) {
-// 	for (let i = 0; i < adjMatrix.length; i += 1) {
-// 		for (let j = 0; j < adjMatrix[i].length; j += 1) {
-// 			if (adjMatrix[i][j] === 1) {
-// 				edgeList.push([i, j]);
-// 			}
-// 		}
-// 	}
-// 	return edgeList;
-// }
-
-// const edgeListStart = convertToEdgeList(adjMatrixStart);
-// const edgeListEnd = convertToEdgeList(adjMatrixFinish);
-
-// console.log(edgeListStart);
-// console.log(edgeListEnd);
-
-// // console.log(knightMoves([0,0],[3,3]));
-
-// knightMoves([0, 0], [3, 3]);
+// console.log(knightMoves([0, 0], [3, 3]));
