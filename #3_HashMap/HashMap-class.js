@@ -1,3 +1,15 @@
+/* eslint max-classes-per-file: "off" */
+
+class Node {
+	constructor(value = null, nextNode = null) {
+		this.value = value;
+		this.nextNode = nextNode;
+	}
+}
+
+
+
+
 class HashMap {
 	constructor(capacity = 16, loadFactor = 0.75) {
 		this.capacity = capacity;
