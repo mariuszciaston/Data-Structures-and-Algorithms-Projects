@@ -114,16 +114,42 @@ class HashMap {
 	}
 
 	remove(key) {
-		// Remove method needs to be fixed
-		const index = this.hash(key);
-		this.checkIndexBounds(index);
+		let keyRemoved = false;
 
-		if (this.buckets[index]?.head.value.key === key) {
-			this.buckets[index] = null;
-			// this.resize();
-			return true;
-		}
-		return false;
+		this.buckets = this.buckets.map((bucket) => {
+			let currentNode = bucket?.head;
+			let previous = null;
+			const newBucket = { ...bucket };
+
+			while (currentNode) {
+				if (currentNode.value.key === key) {
+					if (previous === null) {
+						newBucket.head = currentNode.nextNode;
+
+						if (currentNode === bucket.tail) {
+							newBucket.tail = null;
+						}
+					} else {
+						previous.nextNode = currentNode.nextNode;
+
+						if (currentNode === bucket.tail) {
+							newBucket.tail = previous;
+						}
+					}
+					newBucket.size -= 1;
+					keyRemoved = true;
+					// this.resize();
+					return newBucket;
+				}
+
+				previous = currentNode;
+				currentNode = currentNode.nextNode;
+			}
+
+			return bucket;
+		});
+
+		return keyRemoved;
 	}
 
 	length() {
@@ -214,6 +240,7 @@ console.log('Keys:', test.keys());
 console.log('Values:', test.values());
 console.log('Entries:', test.entries());
 
+// console.log(test.buckets[1]);
 console.log(test.buckets);
 
 console.log('-----------------');
