@@ -36,37 +36,37 @@ class HashMap {
 		this.threshold = capacity * loadFactor;
 	}
 
-	// resize() {
-	// 	if (this.length() >= this.threshold) {
-	// 		const newCapacity = this.capacity * 2;
-	// 		const newBuckets = new Array(newCapacity).fill(null);
-	// 		this.capacity = newCapacity;
+	resize() {
+		if (this.length() >= this.threshold) {
+			const newCapacity = this.capacity * 2;
+			const newBuckets = new Array(newCapacity).fill(null);
+			this.capacity = newCapacity;
 
-	// 		this.buckets.forEach((bucket) => {
-	// 			if (bucket !== null) {
-	// 				const index = this.hash(bucket.head.value.key);
-	// 				newBuckets[index] = bucket;
-	// 			}
-	// 		});
+			this.buckets.forEach((bucket) => {
+				if (bucket !== null) {
+					const index = this.hash(bucket.head.value.key);
+					newBuckets[index] = bucket;
+				}
+			});
 
-	// 		this.buckets = newBuckets;
-	// 		this.threshold = newCapacity * this.loadFactor;
-	// 	} else if (this.length() < this.threshold) {
-	// 		const newCapacity = Math.max(16, Math.floor(this.capacity / 2));
-	// 		const newBuckets = new Array(newCapacity).fill(null);
-	// 		this.capacity = newCapacity;
+			this.buckets = newBuckets;
+			this.threshold = newCapacity * this.loadFactor;
+		} else if (this.length() < this.threshold) {
+			const newCapacity = Math.max(16, Math.floor(this.capacity / 2));
+			const newBuckets = new Array(newCapacity).fill(null);
+			this.capacity = newCapacity;
 
-	// 		this.buckets.forEach((bucket) => {
-	// 			if (bucket !== null) {
-	// 				const index = this.hash(bucket.head.value.key);
-	// 				newBuckets[index] = bucket;
-	// 			}
-	// 		});
+			this.buckets.forEach((bucket) => {
+				if (bucket !== null) {
+					const index = this.hash(bucket.head.value.key);
+					newBuckets[index] = bucket;
+				}
+			});
 
-	// 		this.buckets = newBuckets;
-	// 		this.threshold = newCapacity * this.loadFactor;
-	// 	}
-	// }
+			this.buckets = newBuckets;
+			this.threshold = newCapacity * this.loadFactor;
+		}
+	}
 
 	hash(key) {
 		let hashCode = 0;
@@ -98,7 +98,7 @@ class HashMap {
 		} else {
 			this.buckets[index].append({ key, value });
 		}
-		// this.resize();
+		this.resize();
 	}
 
 	get(key) {
@@ -138,7 +138,7 @@ class HashMap {
 					}
 					newBucket.size -= 1;
 					keyRemoved = true;
-					// this.resize();
+					this.resize();
 					return newBucket;
 				}
 
@@ -158,7 +158,7 @@ class HashMap {
 
 	clear() {
 		this.buckets.fill(null);
-		// this.resize();
+		this.resize();
 		return true;
 	}
 
@@ -232,7 +232,7 @@ console.log('Length:', test.length());
 console.log('Get:', test.get('apple'));
 console.log('Has:', test.has('apple'));
 // console.log('Remove:', test.remove('elephant'));
-console.log('Has:', test.has('apple'));
+// console.log('Has:', test.has('elephant'));
 console.log('Length:', test.length());
 // console.log('Clear:', test.clear());
 // console.log('Length:', test.length());
